@@ -15,9 +15,15 @@ jobs:
     - name: Setup SSH
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Debug SSH
+      run: |
+        ls -la ~/.ssh
+        cat ~/.ssh/id_rsa | head -n 5
+        echo "HOST: ${{ secrets.EC2_HOST }}"   
 
     - name: Copy index.html to EC2
       run: |
